@@ -15,7 +15,7 @@ fn main() {
 #[tauri::command]
 #[warn(non_snake_case)]
 fn send_msg(inputText: String) -> String {
-  let mut package = json!({
+  let package = json!({
     "msg": inputText,
     "userId": "0",
     "password": "hui_penis",
@@ -34,7 +34,9 @@ fn send_msg(inputText: String) -> String {
 }
 
 fn send_msg_to_server(package_str: &str) -> io::Result<()> {
-  let package_str = String::from(package_str);
+  let mut package_str = String::from(package_str);
+  package_str.push('\n');
+
   let _handle = thread::spawn(move || {
     let mut stream = match TcpStream::connect("127.0.0.1:1201") {
       Ok(stream) => stream,
