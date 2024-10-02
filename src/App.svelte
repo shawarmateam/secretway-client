@@ -27,7 +27,7 @@
       }, 10);
     }
   }
-
+// TODO: подключить FontAwesome
   
 </script>
 
@@ -37,8 +37,13 @@
       <p>{colToShow}</p>
     {/each}
   </div>
-  <input type="text" id={isError ? 'error-msg' : 'send-msg'} 
-  bind:value={inputText} on:keydown={handleKeyDown} placeholder="Введите сообщение" />
+
+  <div>
+    <input type="text" id={isError ? 'error-msg' : 'send-msg'} 
+      bind:value={inputText} on:keydown={handleKeyDown} placeholder="Введите сообщение" />
+
+    <button class="send-btn"><i class="fa-solid fa-arrow-right"></i></button>
+  </div>
 </main>
 
 <style>
@@ -48,7 +53,7 @@
     left: 10px;
 
     height: 25px;
-    width: 95%;
+    width: calc(95% - 30px);
     box-shadow: 0px 0px 10px rgba(0,0,0,0.7);
     background-color: #d5d5d5;
     color: #000;
@@ -101,5 +106,24 @@
 
   div.msgs>p {
     margin: 0;
+  }
+
+  .send-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 10px;
+
+    width: 25px;
+    height: 34px;
+    background-color: #d5d5d5;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.7);
+    outline: none;
+
+    transition:
+      box-shadow .5s;
+  }
+
+  .send-btn:hover {
+    box-shadow: 0px 0px 10px rgba(255,255,255,0.7);
   }
 </style>
