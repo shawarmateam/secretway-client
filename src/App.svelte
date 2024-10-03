@@ -2,11 +2,16 @@
   import svelteLogo from './assets/svelte.svg'
   import viteLogo from '/vite.svg'
   import Counter from './lib/Counter.svelte'
+  import SendBtn from './assets/send-icon.svg'
   import { invoke } from '@tauri-apps/api'
 
   let inputText = '';
   let textToShow: string[] = [];
   let isError = false;
+
+  type SendBtnProps = {
+    SendBtnText: string;
+  };
 
   async function handleKeyDown(event: KeyboardEvent) 
   {
@@ -27,7 +32,6 @@
       }, 10);
     }
   }
-// TODO: подключить FontAwesome
   
 </script>
 
@@ -42,7 +46,10 @@
     <input type="text" id={isError ? 'error-msg' : 'send-msg'} 
       bind:value={inputText} on:keydown={handleKeyDown} placeholder="Введите сообщение" />
 
-    <button class="send-btn"><i class="fa-solid fa-arrow-right"></i></button>
+    <!-- <input type="button" value="→" class="send-btn" /> -->
+    <button class="send-btn">
+      <img src={SendBtn} alt="" width="20" height="20" />
+    </button>
   </div>
 </main>
 
@@ -118,6 +125,11 @@
     background-color: #d5d5d5;
     box-shadow: 0px 0px 10px rgba(0,0,0,0.7);
     outline: none;
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     transition:
       box-shadow .5s;
