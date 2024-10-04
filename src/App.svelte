@@ -6,12 +6,23 @@
   import { invoke } from '@tauri-apps/api'
 
   let inputText = '';
+  let isInputTextNull = true;
   let textToShow: string[] = [];
   let isError = false;
 
-  type SendBtnProps = {
-    SendBtnText: string;
-  };
+  function handleInputSend()
+  {
+    if (inputText.length > 0 && isInputTextNull)
+    {
+      isInputTextNull = false;
+      console.log("LOG: isInputTextNull: "+isInputTextNull);
+    } 
+    else if (!isInputTextNull && inputText.length == 0)
+    {
+      isInputTextNull = true;
+      console.log("LOG: isInputTextNull: "+isInputTextNull);
+    }
+  }
 
   async function handleKeyDown(event: KeyboardEvent) 
   {
@@ -32,6 +43,16 @@
       }, 10);
     }
   }
+
+  async function handleClickSend()
+  {
+    const send_msg_responce = await invoke('send_msg', { inputText });
+    console.log(send_msg_responce);
+    
+    textToShow = [...textToShow, inputText];
+    console.log(textToShow);
+    inputText = '';
+  }
   
 </script>
 
@@ -42,12 +63,11 @@
     {/each}
   </div>
 
-  <div>
-    <input type="text" id={isError ? 'error-msg' : 'send-msg'} 
-      bind:value={inputText} on:keydown={handleKeyDown} placeholder="Введите сообщение" />
+  <div class="div-send">
+    <input type="text" id={isError ? 'error-msg' : 'send-msg'}
+      bind:value={inputText} on:keydown={handleKeyDown} on:input={handleInputSend} placeholder="Введите сообщение" />
 
-    <!-- <input type="button" value="→" class="send-btn" /> -->
-    <button class="send-btn">
+    <button class="send-btn" on:click={handleClickSend} id={isInputTextNull ? 'hide-send-btn' : 'show-send-btn'}>
       <img src={SendBtn} alt="" width="20" height="20" />
     </button>
   </div>
@@ -55,21 +75,33 @@
 
 <style>
   input[type=text]#send-msg {
-    position: absolute;
+    /* position: absolute;
     bottom: 10px;
-    left: 10px;
+    left: 10px; */
 
     height: 25px;
-    width: calc(95% - 30px);
+    /* width: calc(98% - 30px); */
     box-shadow: 0px 0px 10px rgba(0,0,0,0.7);
     background-color: #d5d5d5;
     color: #000;
     border-radius: 10px;
+    width: calc(98% - 30px);
+
+    margin-right: 10px;
+    margin-left: 5px;
     transition:
       box-shadow .5s,
       transform .5s,
       outline .5s,
       border-color .5s;
+  }
+
+  #show-send-btn {
+    margin-right: 5px;
+  }
+
+  #hide-send-btn {
+    margin-right: -50px;
   }
 
   input[type=text]#send-msg:focus {
@@ -79,10 +111,6 @@
 
 
   input[type=text]#error-msg {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-
     height: 25px;
     width: 95%;
     background-color: #d5d5d5;
@@ -116,9 +144,9 @@
   }
 
   .send-btn {
-    position: absolute;
+    /* position: absolute;
     bottom: 8px;
-    right: 10px;
+    right: 10px; */
 
     width: 25px;
     height: 34px;
@@ -131,11 +159,27 @@
     align-items: center;
     justify-content: center;
 
+    margin-bottom: 5px;
+
     transition:
       box-shadow .5s;
+      background-color: .5s;
+      margin-right: .5s;
   }
 
   .send-btn:hover {
     box-shadow: 0px 0px 10px rgba(255,255,255,0.7);
+    background-color: white;
+  }
+
+  .div-send {
+    display: flex;
+
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+
+    width: 100%;
+    overflow: hidden;
   }
 </style>
