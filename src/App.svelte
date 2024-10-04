@@ -3,6 +3,7 @@
   import viteLogo from '/vite.svg'
   import Counter from './lib/Counter.svelte'
   import SendBtn from './assets/send-icon.svg'
+  import VoiceBtn from './assets/voice-icon.svg'
   import { invoke } from '@tauri-apps/api'
 
   let inputText = '';
@@ -34,6 +35,7 @@
         textToShow = [...textToShow, inputText];
         console.log(textToShow);
         inputText = '';
+        handleInputSend();
     } else if (!isError && event.key === 'Enter') {
       console.log("Error catched: Cannot send msg, when input field is null.");
       isError = true;
@@ -52,6 +54,7 @@
     textToShow = [...textToShow, inputText];
     console.log(textToShow);
     inputText = '';
+    handleInputSend();
   }
   
 </script>
@@ -64,8 +67,12 @@
   </div>
 
   <div class="div-send">
-    <input type="text" id={isError ? 'error-msg' : 'send-msg'}
+    <input type="text" class="{isError ? 'error-msg' : 'send-msg'}" id="{isInputTextNull ? 'hide-send-btn' : 'show-send-btn'}"
       bind:value={inputText} on:keydown={handleKeyDown} on:input={handleInputSend} placeholder="Введите сообщение" />
+
+    <button class="voice-btn" id={isInputTextNull ? 'hide-send-btn' : 'show-send-btn'}>
+      <img src={VoiceBtn} alt="" width="20" height="20" />
+    </button>
 
     <button class="send-btn" on:click={handleClickSend} id={isInputTextNull ? 'hide-send-btn' : 'show-send-btn'}>
       <img src={SendBtn} alt="" width="20" height="20" />
@@ -74,7 +81,7 @@
 </main>
 
 <style>
-  input[type=text]#send-msg {
+  input[type=text].send-msg {
     /* position: absolute;
     bottom: 10px;
     left: 10px; */
@@ -89,6 +96,8 @@
 
     margin-right: 10px;
     margin-left: 5px;
+    margin-top: 10px;
+
     transition:
       box-shadow .5s,
       transform .5s,
@@ -96,21 +105,35 @@
       border-color .5s;
   }
 
-  #show-send-btn {
-    margin-right: 5px;
+  button.send-btn#show-send-btn {
+
   }
 
-  #hide-send-btn {
-    margin-right: -50px;
+  button.send-btn#hide-send-btn {
+    transition: transform .1s ease-in;
+    transform: translateX(50px);
   }
 
-  input[type=text]#send-msg:focus {
+  button.voice-btn#show-send-btn {
+    transition: transform .1s ease-in;
+    transform: translateX(50px);
+  }
+
+  button.voice-btn#hide-send-btn {
+
+  }
+
+  input[type=text]#hide-send-btn {
+    width: 98%;
+  }
+
+  input[type=text].send-msg:focus {
     /* border-color: #fff; */
     box-shadow: 0px 0px 10px rgba(255,255,255,0.7);
   }
 
 
-  input[type=text]#error-msg {
+  input[type=text].error-msg {
     height: 25px;
     width: 95%;
     background-color: #d5d5d5;
@@ -122,7 +145,7 @@
     transform: translateX(-10px);
   }
 
-  input[type=text]#error-msg:focus {
+  input[type=text].error-msg:focus {
     border-color: #ff0000;
     outline: 0;
   }
@@ -148,8 +171,10 @@
     bottom: 8px;
     right: 10px; */
 
+    margin-top: 10px;
+    border: 2px;
     width: 25px;
-    height: 34px;
+    height: 31.5px;
     background-color: #d5d5d5;
     box-shadow: 0px 0px 10px rgba(0,0,0,0.7);
     outline: none;
@@ -158,16 +183,45 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
-    margin-bottom: 5px;
+    margin-right: 5px;
 
     transition:
-      box-shadow .5s;
-      background-color: .5s;
-      margin-right: .5s;
+      box-shadow .5s,
+      /* background-color: .5s, */
+      transform .1s ease-out;
   }
 
   .send-btn:hover {
+    box-shadow: 0px 0px 10px rgba(255,255,255,0.7);
+    background-color: white;
+  }
+
+  .voice-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 0px;
+    
+    margin-top: 10px;
+    border: 2px;
+    width: 25px;
+    height: 31.5px;
+    background-color: #d5d5d5;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.7);
+    outline: none;
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+
+    transition:
+      box-shadow .5s,
+      /* background-color: .5s, */
+      transform .1s ease-out;
+  }
+
+  .voice-btn:hover {
     box-shadow: 0px 0px 10px rgba(255,255,255,0.7);
     background-color: white;
   }
@@ -179,6 +233,7 @@
     left: 0px;
     bottom: 0px;
 
+    height: 50px;
     width: 100%;
     overflow: hidden;
   }
